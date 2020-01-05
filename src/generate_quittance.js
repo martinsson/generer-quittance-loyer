@@ -24,15 +24,24 @@ async function downloadFile(driveV3, fileId, destPath) {
 async function replaceText(docs, fileId) {
     const replacementValues = {
         "MONTANT": 455,
+        "NOM": "Thomas",
+        "PRENOM": "Joannes",
+        "DEBUT": "1/1/2020",
+        "FIN": "1/2/2020",
+        "MOIS": "JANVIER",
+        "ANNEE": 2020,
+        "MONTANT LETTRES": "Quatre cent cinquiante-cinq",
     }
-    let montant = 'MONTANT'
-    let requests = Object.entries(replacementValues).map(([key, value]) => ({            replaceAllText: {
+    let createUpdateRequest = ([key, value]) => ({
+        replaceAllText: {
             containsText: {
                 text: '##' + key + '##',
                 matchCase: true,
             },
             replaceText: value.toString(),
-        }}))
+        }
+    })
+    let requests = Object.entries(replacementValues).map(createUpdateRequest)
 
 
     await docs.documents.batchUpdate({
@@ -45,7 +54,7 @@ async function replaceText(docs, fileId) {
 
 }
 
-async function exportQuittance(destPath)  {
+async function exportQuittance(destPath) {
     const auth = connectToDrive()
     let templateId = '19jBWIFhpVAdhatQxYDX-CNRZCPPcVmuhoZdjzJedBpg'
     const drive = new drive_v3.Drive({auth})
