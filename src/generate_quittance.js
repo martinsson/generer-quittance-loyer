@@ -22,17 +22,18 @@ async function downloadFile(driveV3, fileId, destPath) {
 }
 
 async function replaceText(docs, fileId) {
-    let requests = [
-        {
-            replaceAllText: {
-                containsText: {
-                    text: '##MONTANT##',
-                    matchCase: true,
-                },
-                replaceText: "455",
+    const replacementValues = {
+        "MONTANT": 455,
+    }
+    let montant = 'MONTANT'
+    let requests = Object.entries(replacementValues).map(([key, value]) => ({            replaceAllText: {
+            containsText: {
+                text: '##' + key + '##',
+                matchCase: true,
             },
-        }
-    ];
+            replaceText: value.toString(),
+        }}))
+
 
     await docs.documents.batchUpdate({
         documentId: fileId,
