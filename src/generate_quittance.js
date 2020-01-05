@@ -1,4 +1,5 @@
 const fs = require('fs')
+const {createQuittanceData} = require("./textual_date")
 const {google, drive_v3, docs_v1} = require('googleapis')
 
 function connectToDrive() {
@@ -22,14 +23,13 @@ async function downloadFile(driveV3, fileId, destPath) {
 }
 
 async function replaceText(docs, fileId) {
+
+    const dateData = createQuittanceData(new Date())
     const replacementValues = {
         "MONTANT": 455,
         "NOM": "Thomas",
         "PRENOM": "Joannes",
-        "DEBUT": "1/1/2020",
-        "FIN": "1/2/2020",
-        "MOIS": "JANVIER",
-        "ANNEE": 2020,
+        ...dateData,
         "MONTANT LETTRES": "Quatre cent cinquiante-cinq",
     }
     let createUpdateRequest = ([key, value]) => ({
