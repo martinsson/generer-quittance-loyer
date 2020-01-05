@@ -3,6 +3,7 @@ const {describe, it} = require("mocha")
 const fs = require("fs")
 const os = require("os")
 const path = require('path')
+const {writtenFrenchNumber} = require("../src/textual_date")
 const {createQuittanceData} = require("../src/textual_date")
 
 const {expect} = require("chai")
@@ -34,6 +35,12 @@ describe("textual_date", () => {
         })
 
     });
+
+    it("written numbers", async () => {
+        const result = writtenFrenchNumber(455)
+        expect(result).equal("Quatre cent cinquante-cinq")
+    });
+
 
 
 

@@ -13,4 +13,13 @@ function createQuittanceData(date) {
 }
 
 
-module.exports = {createQuittanceData}
+function writtenFrenchNumber(number) {
+    var writtenNumber = require('written-number')
+    writtenNumber.defaults.lang = 'fr'
+    let textual_number = writtenNumber(number)
+    const result = textual_number.charAt(0).toUpperCase() + textual_number.slice(1)
+    return result
+}
+
+
+module.exports = {createQuittanceData, writtenFrenchNumber}

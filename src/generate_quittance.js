@@ -1,6 +1,7 @@
 const fs = require('fs')
 const {createQuittanceData} = require("./textual_date")
 const {google, drive_v3, docs_v1} = require('googleapis')
+const {writtenFrenchNumber} = require("./textual_date")
 
 function connectToDrive() {
     const credentials = require('../credentials.json')
@@ -30,7 +31,7 @@ async function replaceText(docs, fileId) {
         "NOM": "Thomas",
         "PRENOM": "Joannes",
         ...dateData,
-        "MONTANT LETTRES": "Quatre cent cinquiante-cinq",
+        "MONTANT LETTRES": writtenFrenchNumber(455),
     }
     let createUpdateRequest = ([key, value]) => ({
         replaceAllText: {
