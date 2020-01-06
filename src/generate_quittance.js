@@ -14,16 +14,18 @@ function connectToGoogleService() {
     google.options({auth})
 }
 
-async function downloadFile(driveV3, fileId, destPath) {
-    const dest = fs.createWriteStream(destPath)
+async function downloadFile(fileId, destPath) {
+    const driveV3 = google.drive({version: "v3"})
     let response = await driveV3.files.export({
         fileId,
         mimeType: 'application/pdf'
     }, {responseType: 'stream'})
+    const dest = fs.createWriteStream(destPath)
     response.data.pipe(dest)
 }
 
-async function replaceText(docs, fileId) {
+async function replaceText(fileId) {
+
 
     const dateData = createQuittanceData(new Date())
     const replacementValues = {
@@ -45,6 +47,7 @@ async function replaceText(docs, fileId) {
     let requests = Object.entries(replacementValues).map(createUpdateRequest)
 
 
+    const docs = google.docs({version: "v1"})
     await docs.documents.batchUpdate({
         documentId: fileId,
         resource: {
@@ -53,27 +56,29 @@ async function replaceText(docs, fileId) {
     })
 }
 
-async function createEmptyDocument(title) {
+async function createEmptyDocument(title, ownerEmailAddress) {
     connectToGoogleService()
     const docs = google.docs({version: "v1"})
     const result = await docs.documents.create({requestBody: {title}})
     const drive = google.drive({version: "v3"})
-    let requestBody = {type:'user', emailAddress: "martinsson.johan@gmail.com", role: 'writer', allowDiscovery: true}
+    let requestBody = {type:'user', emailAddress: ownerEmailAddress, role: 'writer', allowDiscovery: true}
     drive.permissions.create({fileId: result.data.documentId, requestBody})
     return result.data.documentId
+}
+
+async function copyFile(templateId) {
+    const drive = google.drive({version: "v3"})
+    return await drive.files.copy({fileId: templateId})
 }
 
 async function exportQuittance(destPath) {
     connectToGoogleService()
     let templateId = '1SWHs4EXwLNy50tv3pTeL4eOqoJjM5gagmG5qvugNGwI'
-    const drive = google.drive({version: "v3"})
+    const newQuittance = await copyFile(templateId)
 
-    const newQuittance = await drive.files.copy({fileId: templateId})
 
-    const docs = google.docs({version: "v1"})
-
-    await replaceText(docs, newQuittance.data.id)
-    await downloadFile(drive, newQuittance.data.id, destPath)
+    await replaceText(newQuittance.data.id)
+    await downloadFile(newQuittance.data.id, destPath)
     return newQuittance
 }
 
