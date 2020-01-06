@@ -8,9 +8,19 @@ function connectToDrive() {
     let token = require('../token')
     let auth = new google.auth.OAuth2(
         credentials.client_id, credentials.client_secret)
-    // auth.request = function(e) { console.log(e)}
     auth.setCredentials(token)
-    return auth
+    google.options({auth})
+}
+
+function connectToGoogleService() {
+    const auth = new google.auth.GoogleAuth({
+        scopes: [
+            'https://www.googleapis.com/auth/documents',
+            'https://www.googleapis.com/auth/drive.file',
+            'https://www.googleapis.com/auth/drive.readonly'
+        ],
+    });
+    google.options({auth})
 
 }
 
@@ -51,25 +61,33 @@ async function replaceText(docs, fileId) {
             requests,
         },
     })
+}
 
-
+async function createEmptyDocument(title) {
+    connectToGoogleService()
+    const docs = google.docs({version: "v1"})
+    const result = await docs.documents.create({requestBody: {title}})
+    const drive = google.drive({version: "v3"})
+    let requestBody = {type:'user', emailAddress: "martinsson.johan@gmail.com", role: 'writer', allowDiscovery: true}
+    drive.permissions.create({fileId: result.data.documentId, requestBody})
+    return result.data.documentId
 }
 
 async function exportQuittance(destPath) {
-    const auth = connectToDrive()
+    connectToDrive()
     let templateId = '19jBWIFhpVAdhatQxYDX-CNRZCPPcVmuhoZdjzJedBpg'
-    const drive = new drive_v3.Drive({auth})
+    const drive = google.drive({version: "v3"})
 
     const newQuittance = await drive.files.copy({fileId: templateId})
 
-    const docs = new docs_v1.Docs({auth})
+    const docs = google.docs({version: "v1"})
 
     await replaceText(docs, newQuittance.data.id)
     await downloadFile(drive, newQuittance.data.id, destPath)
     return newQuittance
 }
 
-module.exports = {exportQuittance}
+module.exports = {exportQuittance, createEmptyDocument}
 
 
 /*
