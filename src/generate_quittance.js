@@ -3,15 +3,6 @@ const {createQuittanceData} = require("./textual_date")
 const {google, drive_v3, docs_v1} = require('googleapis')
 const {writtenFrenchNumber} = require("./textual_date")
 
-function connectToDrive() {
-    const credentials = require('../credentials.json')
-    let token = require('../token')
-    let auth = new google.auth.OAuth2(
-        credentials.client_id, credentials.client_secret)
-    auth.setCredentials(token)
-    google.options({auth})
-}
-
 function connectToGoogleService() {
     const auth = new google.auth.GoogleAuth({
         scopes: [
@@ -21,7 +12,6 @@ function connectToGoogleService() {
         ],
     });
     google.options({auth})
-
 }
 
 async function downloadFile(driveV3, fileId, destPath) {
@@ -74,8 +64,8 @@ async function createEmptyDocument(title) {
 }
 
 async function exportQuittance(destPath) {
-    connectToDrive()
-    let templateId = '19jBWIFhpVAdhatQxYDX-CNRZCPPcVmuhoZdjzJedBpg'
+    connectToGoogleService()
+    let templateId = '1SWHs4EXwLNy50tv3pTeL4eOqoJjM5gagmG5qvugNGwI'
     const drive = google.drive({version: "v3"})
 
     const newQuittance = await drive.files.copy({fileId: templateId})
