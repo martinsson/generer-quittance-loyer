@@ -16,7 +16,7 @@ describe("generate_quittance", () => {
     })
     it("generateQuittance", async () => {
         let destPath = path.join(os.tmpdir(), 'quittance.pdf')
-        const doc = await exportQuittance(destPath)
+        const doc = await exportQuittance(destPath, '1SWHs4EXwLNy50tv3pTeL4eOqoJjM5gagmG5qvugNGwI')
         docId = doc.data.id
         fs.existsSync(destPath)
         expect(fs.existsSync(destPath)).true

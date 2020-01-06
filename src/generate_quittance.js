@@ -1,6 +1,6 @@
 const fs = require('fs')
 const {createQuittanceData} = require("./textual_date")
-const {google, drive_v3, docs_v1} = require('googleapis')
+const {google} = require('googleapis')
 const {writtenFrenchNumber} = require("./textual_date")
 
 function connectToGoogleService() {
@@ -71,9 +71,8 @@ async function copyFile(templateId) {
     return await drive.files.copy({fileId: templateId})
 }
 
-async function exportQuittance(destPath) {
+async function exportQuittance(destPath, templateId) {
     connectToGoogleService()
-    let templateId = '1SWHs4EXwLNy50tv3pTeL4eOqoJjM5gagmG5qvugNGwI'
     const newQuittance = await copyFile(templateId)
 
 
@@ -83,13 +82,3 @@ async function exportQuittance(destPath) {
 }
 
 module.exports = {exportQuittance, createEmptyDocument}
-
-
-/*
-
-copy template
-replace text
-export
-delete copy
-
- */
