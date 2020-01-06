@@ -1,0 +1,5 @@
+*credentials.json
+configuration.json
+
+.idea/
+node_modules/

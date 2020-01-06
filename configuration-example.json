@@ -1,0 +1,9 @@
+{
+  "location": {
+    "NOM": "Doe",
+    "PRENOM": "John",
+    "ADDRESS": "12 rue de la fleur\n38000 Grenoble",
+    "MONTANT": 150,
+  },
+  "templateId": "your google doc id with your signature"
+}

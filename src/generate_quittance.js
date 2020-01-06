@@ -24,16 +24,17 @@ async function downloadFile(fileId, destPath) {
     response.data.pipe(dest)
 }
 
-async function replaceText(fileId) {
+async function replaceText(fileId, {NOM, PRENOM, ADDRESS, MONTANT}) {
 
 
     const dateData = createQuittanceData(new Date())
     const replacementValues = {
-        "MONTANT": 455,
-        "NOM": "Thomas",
-        "PRENOM": "Joannes",
+        NOM,
+        PRENOM,
+        ADDRESS,
         ...dateData,
-        "MONTANT LETTRES": writtenFrenchNumber(455),
+        "MONTANT": MONTANT,
+        "MONTANT LETTRES": writtenFrenchNumber(MONTANT),
     }
     let createUpdateRequest = ([key, value]) => ({
         replaceAllText: {
@@ -71,13 +72,14 @@ async function copyFile(templateId) {
     return await drive.files.copy({fileId: templateId})
 }
 
-async function exportQuittance(destPath, templateId) {
+async function exportQuittance(destPath, templateId, locationData) {
     connectToGoogleService()
     const newQuittance = await copyFile(templateId)
 
 
-    await replaceText(newQuittance.data.id)
+    await replaceText(newQuittance.data.id, locationData)
     await downloadFile(newQuittance.data.id, destPath)
+    console.log("saved file to " + destPath)
     return newQuittance
 }
 
