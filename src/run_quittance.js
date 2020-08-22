@@ -1,6 +1,7 @@
 const path = require('path')
 const os = require('os')
 const moment = require('moment')
+moment.locale('fr');
 
 const {exportQuittance} = require("./generate_quittance")
 if (!process.env["GOOGLE_APPLICATION_CREDENTIALS"]) {
@@ -23,7 +24,8 @@ let numberOfMonthsAgo = process.argv.length > 3 ? process.argv[3] : 0
 let date = moment().subtract(numberOfMonthsAgo, "months")
 console.log("using date: " + date.format("MMMM YYYY"))
 
-let destPath = path.join(os.tmpdir(), 'quittance.pdf')
-exportQuittance(destPath, configuration.templateId, configuration.location, date).catch(e => {
+let destDir = os.tmpdir()
+
+exportQuittance(destDir, configuration.templateId, configuration.location, date).catch(e => {
     console.error(e)
 })

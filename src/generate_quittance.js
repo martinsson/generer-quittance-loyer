@@ -1,7 +1,10 @@
 const fs = require('fs')
+const path = require('path')
 const {quittanceDate} = require("./textual_date")
+
 const {google} = require('googleapis')
 const {writtenFrenchNumber} = require("./textual_date")
+
 
 function connectToGoogleService() {
     const auth = new google.auth.GoogleAuth({
@@ -14,14 +17,17 @@ function connectToGoogleService() {
     google.options({auth})
 }
 
-async function downloadFile(fileId, destPath) {
+async function downloadFile(fileId, destDir, date) {
     const driveV3 = google.drive({version: "v3"})
     let response = await driveV3.files.export({
         fileId,
         mimeType: 'application/pdf'
     }, {responseType: 'stream'})
+    let filename = "quittance_" + date.format("YYYY_MM") + ".pdf"
+    let destPath = path.join(destDir, filename)
     const dest = fs.createWriteStream(destPath)
     response.data.pipe(dest)
+    console.log("saved file to " + destPath)
 }
 
 async function replaceText(fileId, date, {NOM, PRENOM, ADDRESS, MONTANT}) {
@@ -72,14 +78,14 @@ async function copyFile(templateId) {
     return await drive.files.copy({fileId: templateId})
 }
 
-async function exportQuittance(destPath, templateId, locationData, date) {
+async function exportQuittance(destDir, templateId, locationData, date) {
     connectToGoogleService()
     const newQuittance = await copyFile(templateId)
 
 
     await replaceText(newQuittance.data.id, date, locationData)
-    await downloadFile(newQuittance.data.id, destPath)
-    console.log("saved file to " + destPath)
+    await downloadFile(newQuittance.data.id, destDir, date)
+
     return newQuittance
 }
 

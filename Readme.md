@@ -24,7 +24,10 @@ and specify it with the environment variable like this
       
 * Launch the export
  
- 
-    GOOGLE_APPLICATION_CREDENTIALS=credentials.json node src/run_quittance.js configuration.json    
+    GOOGLE_APPLICATION_CREDENTIALS=credentials.json node src/run_quittance.js configuration.json
+    
+You can also create one for past months. Ex for last month: 
+
+    node run_quittance.js configuration.json 2    
     
 
