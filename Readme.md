@@ -12,8 +12,9 @@ and specify it with the environment variable like this
     by running. The created document id will be printed to the console. You'll need that later 
     
     
+```    
     node run_createdoc.js <your google email address> 
-    
+```    
     
 * Go to your drive and edit the document as you want it. 
     You can use my  [sample document](https://docs.google.com/document/d/1zH5VHvwcKEs3vFn4nCBJGUM9z2ppsjBKIXALNkN69hE/edit?usp=sharing). 
@@ -24,7 +25,9 @@ and specify it with the environment variable like this
       
 * Launch the export
  
-    GOOGLE_APPLICATION_CREDENTIALS=credentials.json node src/run_quittance.js configuration.json
+ ```
+   GOOGLE_APPLICATION_CREDENTIALS=credentials.json node src/run_quittance.js configuration.json
+ ```   
     
 You can also create one for past months. Ex for last month: 
 
