@@ -3,6 +3,7 @@ const {describe, it} = require("mocha")
 const fs = require("fs")
 const os = require("os")
 const path = require('path')
+const moment = require('moment')
 
 const {expect} = require("chai")
 const {google, drive_v3, docs_v1} = require('googleapis')
@@ -21,7 +22,7 @@ describe("generate_quittance", () => {
             "PRENOM": "John",
             "ADDRESS": "12 rue de la fleur\n38000 Grenoble",
             "MONTANT": 150
-        })
+        }, moment())
         createdDocId = doc.data.id
         fs.existsSync(destPath)
         expect(fs.existsSync(destPath)).true

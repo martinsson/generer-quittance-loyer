@@ -1,4 +1,4 @@
-function createQuittanceData(date) {
+function quittanceDate(date) {
     const months = ["JANVIER", "FEVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOUT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DECEMBRE"]
     const monthIndex = date.getMonth()
     let startOfPeriod = new Date(date.getFullYear(), date.getMonth(), 1)
@@ -22,4 +22,4 @@ function writtenFrenchNumber(number) {
 }
 
 
-module.exports = {createQuittanceData, writtenFrenchNumber}
+module.exports = {quittanceDate, writtenFrenchNumber}

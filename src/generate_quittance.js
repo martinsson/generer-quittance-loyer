@@ -1,5 +1,5 @@
 const fs = require('fs')
-const {createQuittanceData} = require("./textual_date")
+const {quittanceDate} = require("./textual_date")
 const {google} = require('googleapis')
 const {writtenFrenchNumber} = require("./textual_date")
 
@@ -24,10 +24,10 @@ async function downloadFile(fileId, destPath) {
     response.data.pipe(dest)
 }
 
-async function replaceText(fileId, {NOM, PRENOM, ADDRESS, MONTANT}) {
+async function replaceText(fileId, date, {NOM, PRENOM, ADDRESS, MONTANT}) {
 
 
-    const dateData = createQuittanceData(new Date())
+    const dateData = quittanceDate(date.toDate())
     const replacementValues = {
         NOM,
         PRENOM,
@@ -72,12 +72,12 @@ async function copyFile(templateId) {
     return await drive.files.copy({fileId: templateId})
 }
 
-async function exportQuittance(destPath, templateId, locationData) {
+async function exportQuittance(destPath, templateId, locationData, date) {
     connectToGoogleService()
     const newQuittance = await copyFile(templateId)
 
 
-    await replaceText(newQuittance.data.id, locationData)
+    await replaceText(newQuittance.data.id, date, locationData)
     await downloadFile(newQuittance.data.id, destPath)
     console.log("saved file to " + destPath)
     return newQuittance
