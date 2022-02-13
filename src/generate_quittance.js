@@ -17,14 +17,13 @@ function connectToGoogleService() {
     google.options({auth})
 }
 
-async function downloadFile(fileId, destDir, date) {
+async function downloadFile(fileId, destDir, date, fileName) {
     const driveV3 = google.drive({version: "v3"})
     let response = await driveV3.files.export({
         fileId,
         mimeType: 'application/pdf'
     }, {responseType: 'stream'})
-    let filename = "quittance_" + date.format("YYYY_MM") + ".pdf"
-    let destPath = path.join(destDir, filename)
+    let destPath = path.join(destDir, fileName)
     const dest = fs.createWriteStream(destPath)
     response.data.pipe(dest)
     console.log("saved file to " + destPath)
@@ -69,7 +68,7 @@ async function createEmptyDocument(title, ownerEmailAddress) {
     const result = await docs.documents.create({requestBody: {title}})
     const drive = google.drive({version: "v3"})
     let requestBody = {type:'user', emailAddress: ownerEmailAddress, role: 'writer', allowDiscovery: true}
-    drive.permissions.create({fileId: result.data.documentId, requestBody})
+    await drive.permissions.create({fileId: result.data.documentId, requestBody})
     return result.data.documentId
 }
 
@@ -84,7 +83,8 @@ async function exportQuittance(destDir, templateId, locationData, date) {
 
 
     await replaceText(newQuittance.data.id, date, locationData)
-    await downloadFile(newQuittance.data.id, destDir, date)
+    let fileName = `quittance_${date.format("YYYY_MM")}_${locationData.NOM}.pdf`
+    await downloadFile(newQuittance.data.id, destDir, date, fileName)
 
     return newQuittance
 }
