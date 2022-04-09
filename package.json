@@ -12,7 +12,7 @@
     "chai": "^4.2.0",
     "googleapis": "46",
     "mocha": "^7.0.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "written-number": "^0.9.1"
   }
 }
